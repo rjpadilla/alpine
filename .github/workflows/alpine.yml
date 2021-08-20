@@ -36,10 +36,10 @@ jobs:
         run: |
           export DOCKER_CLI_EXPERIMENTAL=enabled
           version="3.12"
-          repo="treehouses/alpine-tags:${{ matrix.arch }}"
+          repo="rjpadilla/alpine-tags:${{ matrix.arch }}"
           case ${{ matrix.arch }} in
             amd64) : "amd64/alpine:$version" ;;
-            arm) : "balenalib/raspberry-pi-alpine:$version" ;;
+            arm) : "arm32v7/alpine:$version" ;;
             arm64) : "arm64v8/alpine:$version" ;;
           esac
           base="$_"
@@ -75,11 +75,11 @@ jobs:
           version="3.12"
           case ${{ matrix.arch }} in
             amd64) : "amd64/alpine:$version" ;;
-            arm) : "balenalib/raspberry-pi-alpine:$version" ;;
+            arm) : "arm32v7/alpine:$version" ;;
             arm64) : "arm64v8/alpine:$version" ;;
           esac
           image="$_"
-          repo="treehouses/alpine-tags"
+          repo="rjpadilla/alpine-tags"
           dest="$repo:${{ matrix.arch }}"
           date="$(date +%Y%m%d%H%M)"
           docker build -t ghcr.io/$dest --build-arg IMAGE=$image .
@@ -109,7 +109,7 @@ jobs:
         if: ${{ needs.images.outputs.build }}
         id: set-send
         run: |
-          repo="${{ matrix.registry }}/treehouses/alpine"
+          repo="${{ matrix.registry }}/rjpadilla/alpine"
           date="$(date +%Y%m%d%H%M)"
           docker manifest create $repo:latest $repo-tags:amd64 $repo-tags:arm $repo-tags:arm64
           docker manifest create $repo:$date $repo-tags:amd64 $repo-tags:arm $repo-tags:arm64
@@ -120,15 +120,15 @@ jobs:
           docker manifest push $repo:$date
           echo "::set-output name=send::true"
 
-  message:
-    needs: manifests
-    runs-on: ubuntu-latest
-    steps:
-      - name: message chat of new image
-        if: ${{ needs.manifests.outputs.send }}
-        run: |
-          sudo npm install -g @treehouses/cli
-          export gitter_channel="${{ secrets.CHANNEL }}"
-          echo "https://hub.docker.com/r/treehouses/alpine/tags"
-          echo "https://github.com/treehouses/alpine/pkgs/container/alpine"
-          treehouses feedback "new treehouses/alpine check https://hub.docker.com/r/treehouses/alpine/tags or https://github.com/treehouses/alpine/pkgs/container/alpine"
+  # message:
+  #   needs: manifests
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: message chat of new image
+  #       if: ${{ needs.manifests.outputs.send }}
+  #       run: |
+  #         sudo npm install -g @treehouses/cli
+  #         export gitter_channel="${{ secrets.CHANNEL }}"
+  #         echo "https://hub.docker.com/r/treehouses/alpine/tags"
+  #         echo "https://github.com/treehouses/alpine/pkgs/container/alpine"
+  #         treehouses feedback "new treehouses/alpine check https://hub.docker.com/r/treehouses/alpine/tags or https://github.com/treehouses/alpine/pkgs/container/alpine"
