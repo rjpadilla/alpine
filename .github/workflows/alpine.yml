@@ -5,6 +5,7 @@ on:
     branches:
       - master
       - main
+      - check-arm
   workflow_dispatch:
     inputs:
       buildtype:
