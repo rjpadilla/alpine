@@ -40,7 +40,7 @@ jobs:
           repo="rjpadilla/alpine-tags:${{ matrix.arch }}"
           case ${{ matrix.arch }} in
             amd64) : "amd64/alpine:$version" ;;
-            arm) : "arm32v7/alpine:$version" ;;
+            arm) : "arm32v6/alpine:$version" ;;
             arm64) : "arm64v8/alpine:$version" ;;
           esac
           base="$_"
@@ -76,7 +76,7 @@ jobs:
           version="3.12"
           case ${{ matrix.arch }} in
             amd64) : "amd64/alpine:$version" ;;
-            arm) : "arm32v7/alpine:$version" ;;
+            arm) : "arm32v6/alpine:$version" ;;
             arm64) : "arm64v8/alpine:$version" ;;
           esac
           image="$_"
