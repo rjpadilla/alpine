@@ -76,7 +76,7 @@ jobs:
           version="3.12"
           case ${{ matrix.arch }} in
             amd64) : "amd64/alpine:$version" ;;
-            arm) : "rjpadilla/alpine-tags:old" ;;
+            arm) : "rjpadilla/alpine-tags:new" ;;
             arm64) : "arm64v8/alpine:$version" ;;
           esac
           image="$_"
