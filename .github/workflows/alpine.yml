@@ -40,7 +40,7 @@ jobs:
           repo="rjpadilla/alpine-tags:${{ matrix.arch }}"
           case ${{ matrix.arch }} in
             amd64) : "amd64/alpine:$version" ;;
-            arm) : "arm32v6/alpine:$version" ;;
+            arm) : "rjpadilla/alpine-tags:old" ;;
             arm64) : "arm64v8/alpine:$version" ;;
           esac
           base="$_"
@@ -76,14 +76,14 @@ jobs:
           version="3.12"
           case ${{ matrix.arch }} in
             amd64) : "amd64/alpine:$version" ;;
-            arm) : "arm32v6/alpine:$version" ;;
+            arm) : "rjpadilla/alpine-tags:old" ;;
             arm64) : "arm64v8/alpine:$version" ;;
           esac
           image="$_"
           repo="rjpadilla/alpine-tags"
           dest="$repo:${{ matrix.arch }}"
           date="$(date +%Y%m%d%H%M)"
-          docker build -t ghcr.io/$dest --build-arg IMAGE=$image .
+          docker buildx build -t ghcr.io/$dest --build-arg IMAGE=$image .
           docker tag ghcr.io/$dest docker.io/$dest
           docker tag ghcr.io/$dest ghcr.io/$dest-$date
           docker tag docker.io/$dest docker.io/$dest-$date
