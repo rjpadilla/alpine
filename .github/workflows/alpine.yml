@@ -36,11 +36,11 @@ jobs:
         id: set-flag
         run: |
           export DOCKER_CLI_EXPERIMENTAL=enabled
-          version="latest"
+          version="3.12"
           repo="rjpadilla/alpine-tags:${{ matrix.arch }}"
           case ${{ matrix.arch }} in
             amd64) : "amd64/alpine:$version" ;;
-            arm) : "balenalib/raspberry-pi-alpine:$version" ;;
+            arm) : "arm32v6/alpine:$version" ;;
             arm64) : "arm64v8/alpine:$version" ;;
           esac
           base="$_"
@@ -73,11 +73,11 @@ jobs:
         id: set-build
         run: |
           export DOCKER_CLI_EXPERIMENTAL=enabled
-          version="latest"
+          version="3.12"
           case ${{ matrix.arch }} in
             amd64) : "amd64/alpine:$version" ;;
-            arm) : "balenalib/raspberry-pi-alpine:$version" ;;
-            arm64) : "arm64v8/alpine:3.12" ;;
+            arm) : "arm32v6/alpine:$version" ;;
+            arm64) : "arm64v8/alpine:$version" ;;
           esac
           image="$_"
           repo="rjpadilla/alpine-tags"
