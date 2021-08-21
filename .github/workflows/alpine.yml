@@ -73,7 +73,7 @@ jobs:
         id: set-build
         run: |
           export DOCKER_CLI_EXPERIMENTAL=enabled
-          version="3.13"
+          version="3.14"
           case ${{ matrix.arch }} in
             amd64) : "amd64/alpine:$version" ;;
             arm) : "arm32v6/alpine:$version" ;;
