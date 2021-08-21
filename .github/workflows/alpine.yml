@@ -36,7 +36,7 @@ jobs:
         id: set-flag
         run: |
           export DOCKER_CLI_EXPERIMENTAL=enabled
-          version="3.12"
+          version="3.13"
           repo="rjpadilla/alpine-tags:${{ matrix.arch }}"
           case ${{ matrix.arch }} in
             amd64) : "amd64/alpine:$version" ;;
@@ -73,7 +73,7 @@ jobs:
         id: set-build
         run: |
           export DOCKER_CLI_EXPERIMENTAL=enabled
-          version="3.12"
+          version="3.13"
           case ${{ matrix.arch }} in
             amd64) : "amd64/alpine:$version" ;;
             arm) : "arm32v6/alpine:$version" ;;
