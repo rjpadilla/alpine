@@ -3,42 +3,7 @@ name: build image
 on: [push] 
 
 jobs:
-
-  compare:
-    runs-on: ubuntu-latest
-    outputs:
-      flag: ${{ steps.set-flag.outputs.flag }}
-    strategy:
-      fail-fast: false
-      matrix:
-        arch: [amd64, arm, arm64]
-    steps:
-      - name: checkout repository
-        uses: actions/checkout@v2
-      - name: container registries
-        run: |
-          docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
-          docker login docker.io -u ${{ secrets.DOCKERUSERNAME }} -p ${{ secrets.DOCKERAPIKEY }}
-      - name: compare image
-        id: set-flag
-        run: |
-          export DOCKER_CLI_EXPERIMENTAL=enabled
-          version="3.14"
-          repo="rjpadilla/alpine-tags:${{ matrix.arch }}"
-          case ${{ matrix.arch }} in
-            amd64) : "amd64/alpine:$version" ;;
-            arm) : "balenalib/raspberry-pi-alpine:$version" ;;
-            arm64) : "arm64v8/alpine:$version" ;;
-          esac
-          base="$_"
-          docker pull -q $base &>/dev/null
-          docker pull -q $repo &>/dev/null
-          basesha=$(docker image inspect $base | jq --raw-output '.[0].RootFS.Layers|.[]')
-          reposha=$(docker image inspect $repo | jq --raw-output '.[0].RootFS.Layers|.[]')
-          echo "base sha:$basesha repo sha:$reposha"
-          echo "::set-output name=flag::true"
   images:
-    needs: compare
     runs-on: ubuntu-latest
     outputs:
       build: ${{ steps.set-build.outputs.build }}
@@ -54,7 +19,6 @@ jobs:
           docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
           docker login docker.io -u ${{ secrets.DOCKERUSERNAME }} -p ${{ secrets.DOCKERAPIKEY }}
       - name: docker image
-        if: ${{ needs.compare.outputs.flag }}
         id: set-build
         run: |
           export DOCKER_CLI_EXPERIMENTAL=enabled
