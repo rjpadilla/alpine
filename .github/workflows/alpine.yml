@@ -1,3 +1,21 @@
+
+Skip to content
+rjpadilla /
+alpine
+forked from treehouses/alpine
+
+Code
+Pull requests
+Actions
+Projects
+Wiki 0
+Settings
+
+More
+build image
+build image #40
+Workflow file
+.github/workflows/alpine.yml at 406514b
 name: build image
 
 on:
@@ -6,7 +24,6 @@ on:
       - master
       - main
       - check-arm
-      - check-armv6
   workflow_dispatch:
     inputs:
       buildtype:
@@ -37,11 +54,11 @@ jobs:
         id: set-flag
         run: |
           export DOCKER_CLI_EXPERIMENTAL=enabled
-          version="3.14"
+          version="3.12"
           repo="rjpadilla/alpine-tags:${{ matrix.arch }}"
           case ${{ matrix.arch }} in
             amd64) : "amd64/alpine:$version" ;;
-            arm) : "arm32v6/alpine:$version" ;;
+            arm) : "balenalib/raspberry-pi-alpine:latest" ;;
             arm64) : "arm64v8/alpine:$version" ;;
           esac
           base="$_"
@@ -52,7 +69,6 @@ jobs:
           echo "base sha:$basesha repo sha:$reposha"
           ${{ github.event.inputs.buildtype  == 'force' }} && echo "::set-output name=flag::true" || echo "building on change" 
           [[ $reposha == *$basesha* ]] && echo "no changes" || echo "::set-output name=flag::true"
-
   images:
     needs: compare
     runs-on: ubuntu-latest
@@ -74,17 +90,17 @@ jobs:
         id: set-build
         run: |
           export DOCKER_CLI_EXPERIMENTAL=enabled
-          version="3.14"
+          version="3.12"
           case ${{ matrix.arch }} in
             amd64) : "amd64/alpine:$version" ;;
-            arm) : "arm32v6/alpine:$version" ;;
+            arm) : "balenalib/raspberry-pi-alpine:latest" ;;
             arm64) : "arm64v8/alpine:$version" ;;
           esac
           image="$_"
           repo="rjpadilla/alpine-tags"
           dest="$repo:${{ matrix.arch }}"
           date="$(date +%Y%m%d%H%M)"
-          docker build -t ghcr.io/$dest --build-arg IMAGE=$image .
+          docker buildx build -t ghcr.io/$dest --build-arg IMAGE=$image .
           docker tag ghcr.io/$dest docker.io/$dest
           docker tag ghcr.io/$dest ghcr.io/$dest-$date
           docker tag docker.io/$dest docker.io/$dest-$date
@@ -92,7 +108,6 @@ jobs:
           docker push --all-tags docker.io/$repo
           docker images
           echo "::set-output name=build::true"
-
   manifests:
     needs: images
     strategy:
@@ -113,17 +128,14 @@ jobs:
         run: |
           repo="${{ matrix.registry }}/rjpadilla/alpine"
           date="$(date +%Y%m%d%H%M)"
-          docker manifest create $repo:latest $repo-tags:arm $repo-tags:arm64 $repo-tags:amd64
+          docker manifest create $repo:latest $repo-tags:amd64 $repo-tags:arm $repo-tags:arm64
           docker manifest create $repo:$date $repo-tags:amd64 $repo-tags:arm $repo-tags:arm64
-          docker manifest annotate $repo:latest $repo-tags:arm --os linux --arch arm --variant '' 
-          docker manifest annotate $repo:$date $repo-tags:arm --os linux --variant arm 
-          # docker manifest annotate $repo:latest $repo-tags:arm64 --variant arm64 
-          # docker manifest annotate $repo:$date $repo-tags:arm64 --variant arm64 
+          docker manifest annotate $repo:latest $repo-tags:arm --os linux --arch arm --variant ''
+          docker manifest annotate $repo:$date $repo-tags:arm --os linux --arch arm --variant ''
           docker manifest inspect $repo:latest
           docker manifest push $repo:latest
           docker manifest push $repo:$date
           echo "::set-output name=send::true"
-
   # message:
   #   needs: manifests
   #   runs-on: ubuntu-latest
