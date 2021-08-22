@@ -33,9 +33,9 @@ jobs:
           repo="rjpadilla/alpine-tags"
           dest="$repo:${{ matrix.arch }}"
           date="$(date +%Y%m%d%H%M)"
-          # docker buildx build -t ghcr.io/$dest --build-arg IMAGE=$image .
+          docker buildx build --platform ${{ matrix.arch }} -t ghcr.io/$dest --build-arg IMAGE=$image .
           # docker build --platform linux/${{ matrix.arch }} -t ghcr.io/$dest --build-arg IMAGE=$image .
-          docker build -t ghcr.io/$dest --build-arg IMAGE=$image .
+          # docker build -t ghcr.io/$dest --build-arg IMAGE=$image .
           docker tag ghcr.io/$dest docker.io/$dest
           docker tag ghcr.io/$dest ghcr.io/$dest-$date
           docker tag docker.io/$dest docker.io/$dest-$date
