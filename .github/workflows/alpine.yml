@@ -1,21 +1,3 @@
-
-Skip to content
-rjpadilla /
-alpine
-forked from treehouses/alpine
-
-Code
-Pull requests
-Actions
-Projects
-Wiki 0
-Settings
-
-More
-build image
-build image #40
-Workflow file
-.github/workflows/alpine.yml at 406514b
 name: build image
 
 on:
