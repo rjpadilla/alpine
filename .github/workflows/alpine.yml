@@ -112,12 +112,9 @@ jobs:
         run: |
           repo="${{ matrix.registry }}/rjpadilla/alpine"
           date="$(date +%Y%m%d%H%M)"
-          docker manifest create $repo:latest \
-          --amend $repo-tags:amd64 \
-          --amend $repo-tags:arm \
-          --amend $repo-tags:arm64
+          docker manifest create $repo:latest $repo-tags:amd64 $repo-tags:arm $repo-tags:arm64
           docker manifest create $repo:$date $repo-tags:amd64 $repo-tags:arm $repo-tags:arm64
-          # docker manifest annotate $repo:latest $repo-tags:arm --os linux --arch arm 
+          docker manifest annotate $repo:latest $repo-tags:arm --os linux --arch armel 
           docker manifest annotate $repo:$date $repo-tags:arm --os linux --arch arm 
           docker manifest inspect $repo:latest
           docker manifest push $repo:latest
