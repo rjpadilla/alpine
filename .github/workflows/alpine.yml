@@ -26,7 +26,7 @@ jobs:
           version="3.14"
           case ${{ matrix.arch }} in
             amd64) : "amd64/alpine:$version" ;;
-            arm) : "balenalib/raspberry-pi-alpine:$version" ;;
+            arm) : "arm32v6/:$version" ;;
             arm64) : "arm64v8/alpine:$version" ;;
           esac
           image="$_"
