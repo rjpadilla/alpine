@@ -6,6 +6,7 @@ on:
       - master
       - main
       - check-arm
+      - check-armv6
   workflow_dispatch:
     inputs:
       buildtype:
@@ -115,7 +116,7 @@ jobs:
           docker manifest create $repo:latest $repo-tags:arm $repo-tags:arm64 $repo-tags:amd64
           docker manifest create $repo:$date $repo-tags:amd64 $repo-tags:arm $repo-tags:arm64
           docker manifest inspect $repo:latest
-          docker manifest annotate $repo:latest $repo-tags:arm --os linux --arch arm 
+          docker manifest annotate $repo:latest $repo-tags:arm --os linux --variant arm 
           docker manifest annotate $repo:$date $repo-tags:arm --os linux --arch arm 
           docker manifest inspect $repo:latest
           docker manifest push $repo:latest
